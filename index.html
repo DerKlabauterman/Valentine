@@ -16,7 +16,6 @@
     }
 
     *{ box-sizing:border-box; }
-
     body{
       margin:0;
       min-height:100vh;
@@ -58,11 +57,8 @@
     }
 
     /* 🐱 Blinzeln */
-    .eye{
-      transform-origin:center;
-      animation: blink 5s infinite;
-    }
-    .eye.eye2{ animation-delay:.2s; }
+    .eye{ transform-origin:center; animation: blink 5.2s infinite; }
+    .eye.eye2{ animation-delay:.18s; }
     @keyframes blink{
       0%,92%,100%{transform:scaleY(1)}
       94%{transform:scaleY(.12)}
@@ -79,45 +75,47 @@
       position:relative;
       margin:18px auto 0;
       width:min(520px, 92%);
-      height:120px;
-      touch-action: manipulation; /* ✅ FIX */
+      height:140px; /* etwas höher, damit No Platz hat */
     }
 
     .btn{
       border:none;
       border-radius:999px;
       padding:12px 26px;
-      font-weight:700;
+      font-weight:800;
       font-size:16px;
       cursor:pointer;
       user-select:none;
+      -webkit-tap-highlight-color: transparent;
       box-shadow:0 10px 22px rgba(0,0,0,.12);
+      transition: transform .08s ease;
+      position:absolute;
+      top:56px;
+      transform:translate(-50%, -50%);
+      white-space:nowrap;
     }
+    .btn:active{ transform:translate(-50%, -50%) scale(.98); }
 
     .btn-yes{
       background:var(--yes);
       color:white;
-      position:absolute;
       left:30%;
-      top:44px;
-      transform:translate(-50%, -50%);
+      z-index: 10;        /* ✅ YES immer oben */
+      pointer-events:auto;
     }
 
     .btn-no{
       background:var(--no);
       color:#111;
-      position:absolute;
       left:70%;
-      top:44px;
-      transform:translate(-50%, -50%);
       width:96px;
+      z-index: 2;
     }
 
     .hint{ margin-top:12px; font-size:13px; opacity:.75; }
     .footer{ margin-top:16px; font-size:12px; opacity:.55; }
 
     .success{ display:none; }
-
     .success h2{
       font-size: clamp(26px, 4.2vw, 44px);
       font-weight:900;
@@ -157,10 +155,9 @@
 <div class="card">
   <div class="confetti" id="confetti"></div>
 
-  <!-- START -->
   <div id="start">
     <div class="mascot">
-      <svg viewBox="0 0 120 120" width="96" height="96">
+      <svg viewBox="0 0 120 120" width="96" height="96" aria-hidden="true">
         <path class="heart"
           d="M86 20c-4-6-13-6-17 0l-2 3-2-3c-4-6-13-6-17 0-4 6-2 14 4 19l15 13 15-13c6-5 8-13 4-19z"
           fill="#ff3b7a"/>
@@ -192,13 +189,30 @@
     <div class="footer">Tipp: Widerstand ist zwecklos.</div>
   </div>
 
-  <!-- SUCCESS -->
   <div class="success" id="success">
-    <div class="mascot"></div>
+    <div class="mascot">
+      <svg viewBox="0 0 120 120" width="96" height="96" aria-hidden="true">
+        <path class="heart"
+          d="M86 20c-4-6-13-6-17 0l-2 3-2-3c-4-6-13-6-17 0-4 6-2 14 4 19l15 13 15-13c6-5 8-13 4-19z"
+          fill="#ff3b7a"/>
+        <circle cx="60" cy="68" r="38" fill="#f7c49d"/>
+        <g class="eye">
+          <circle cx="46" cy="66" r="6" fill="#111"/>
+          <circle cx="44" cy="64" r="2" fill="#fff"/>
+        </g>
+        <g class="eye eye2">
+          <circle cx="74" cy="66" r="6" fill="#111"/>
+          <circle cx="72" cy="64" r="2" fill="#fff"/>
+        </g>
+        <path d="M60 74 l6 5 a10 10 0 0 1 -12 0z" fill="#ff6b95"/>
+      </svg>
+    </div>
+
     <h1>Lynn will you be my valentine ❤️?</h1>
     <h2>YAY! 🎉</h2>
+
     <div class="imgwrap">
-      <img src="https://media.giphy.com/media/3oriO0OEd9QIDdllqo/giphy.gif">
+      <img src="https://media.giphy.com/media/3oriO0OEd9QIDdllqo/giphy.gif" alt="Yay">
     </div>
   </div>
 </div>
@@ -211,49 +225,80 @@
   const success = document.getElementById("success");
   const confetti= document.getElementById("confetti");
 
-  let pos = { x:.7, y:.37 };
-  placeNo();
-
   function rand(min,max){ return Math.random()*(max-min)+min; }
   function clamp(v,min,max){ return Math.max(min,Math.min(max,v)); }
 
-  function placeNo(){
-    const r = arena.getBoundingClientRect();
-    pos.x = clamp(pos.x,.12,.88);
-    pos.y = clamp(pos.y,.28,.8);
-    noBtn.style.left = pos.x*r.width+"px";
-    noBtn.style.top  = pos.y*r.height+"px";
+  // place No button with a minimum distance from Yes
+  function placeNoSafe(){
+    const rA = arena.getBoundingClientRect();
+    const rY = yesBtn.getBoundingClientRect();
+
+    const minDist = 140; // ✅ Abstand, damit Yes immer klickbar bleibt
+    let tries = 0;
+
+    while (tries < 40){
+      tries++;
+
+      const x = rand(0.15, 0.85) * rA.width;
+      const y = rand(0.30, 0.80) * rA.height;
+
+      const yesCenterX = (rY.left + rY.width/2) - rA.left;
+      const yesCenterY = (rY.top  + rY.height/2) - rA.top;
+
+      const dx = x - yesCenterX;
+      const dy = y - yesCenterY;
+      const d  = Math.hypot(dx, dy);
+
+      if (d >= minDist){
+        noBtn.style.left = x + "px";
+        noBtn.style.top  = y + "px";
+        return;
+      }
+    }
+
+    // fallback: far right
+    noBtn.style.left = (0.78 * rA.width) + "px";
+    noBtn.style.top  = (0.55 * rA.height) + "px";
   }
 
-  function runAway(x,y){
-    pos.x = rand(.15,.85);
-    pos.y = rand(.3,.8);
-    placeNo();
-  }
+  // initial placement
+  placeNoSafe();
 
-  noBtn.addEventListener("mouseenter", e => runAway(e.clientX,e.clientY));
-
-  arena.addEventListener("touchstart", e=>{
-    if(e.target===noBtn){
-      runAway(e.touches[0].clientX,e.touches[0].clientY);
-      e.preventDefault(); // ✅ nur NO blockieren
-    }
-  },{passive:false});
-
-  yesBtn.addEventListener("click", ()=>{
-    start.style.display="none";
-    success.style.display="block";
-    for(let i=0;i<120;i++){
-      const c=document.createElement("i");
-      c.style.left=rand(0,100)+"%";
-      c.style.background=["#ff3b7a","#ffcc00","#7c5cff","#00c2ff"][Math.floor(rand(0,4))];
-      c.style.animationDuration=rand(1.2,2.6)+"s";
-      confetti.appendChild(c);
-    }
-    setTimeout(()=>confetti.innerHTML="",3500);
+  // desktop: run away when pointer gets on it
+  noBtn.addEventListener("pointerenter", (e) => {
+    placeNoSafe();
   });
 
-  window.addEventListener("resize", placeNo);
+  // also run away if user almost clicks it
+  noBtn.addEventListener("pointerdown", (e) => {
+    placeNoSafe();
+    e.preventDefault();
+  });
+
+  // YES → success + confetti
+  yesBtn.addEventListener("click", () => {
+    start.style.display = "none";
+    success.style.display = "block";
+    burstConfetti(140);
+  });
+
+  function burstConfetti(n=100){
+    confetti.innerHTML = "";
+    const colors = ["#ff3b7a","#ffcc00","#7c5cff","#00c2ff","#00d084","#ff6b00"];
+    for(let i=0;i<n;i++){
+      const c = document.createElement("i");
+      c.style.left = rand(0,100) + "%";
+      c.style.background = colors[Math.floor(rand(0, colors.length))];
+      c.style.width = rand(6, 12) + "px";
+      c.style.height = rand(10, 20) + "px";
+      c.style.animationDuration = rand(1.2, 2.8) + "s";
+      c.style.animationDelay = rand(0, 0.25) + "s";
+      confetti.appendChild(c);
+    }
+    setTimeout(()=> confetti.innerHTML="", 3800);
+  }
+
+  window.addEventListener("resize", placeNoSafe);
 </script>
 </body>
 </html>
