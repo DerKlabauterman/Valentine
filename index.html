@@ -1,0 +1,315 @@
+<!doctype html>
+<html lang="de">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Will you be my Valentine?</title>
+  <style>
+    :root{
+      --pink1:#ffd2df;
+      --pink2:#ffc1d4;
+      --card:#ffffffee;
+      --text:#1b1b1b;
+      --yes:#ff3b7a;
+      --no:#e9e9ef;
+    }
+
+    *{ box-sizing:border-box; }
+    body{
+      margin:0;
+      min-height:100vh;
+      font-family: ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, Arial, "Apple Color Emoji","Segoe UI Emoji";
+      color:var(--text);
+      background: radial-gradient(1200px 700px at 50% 20%, var(--pink1), var(--pink2));
+      display:grid;
+      place-items:center;
+      padding:24px;
+    }
+
+    .card{
+      width:min(720px, 92vw);
+      background:var(--card);
+      border-radius:18px;
+      padding:28px 22px 26px;
+      box-shadow:0 18px 45px rgba(0,0,0,.18);
+      text-align:center;
+      position:relative;
+      overflow:hidden;
+    }
+
+    .mascot{
+      width:86px;height:86px;
+      margin:0 auto 10px;
+      border-radius:50%;
+      background:
+        radial-gradient(circle at 50% 45%, #f7c49d 0 56%, transparent 57%),
+        radial-gradient(circle at 35% 40%, #000 0 4%, transparent 4.2%),
+        radial-gradient(circle at 65% 40%, #000 0 4%, transparent 4.2%),
+        radial-gradient(circle at 50% 55%, #ff6b95 0 4.2%, transparent 4.4%),
+        radial-gradient(circle at 78% 18%, #ff3b7a 0 11%, transparent 11.2%);
+      position:relative;
+    }
+    .mascot::before{
+      content:"";
+      position:absolute;
+      left:8px; top:20px;
+      width:0;height:0;
+      border-left:12px solid transparent;
+      border-right:12px solid transparent;
+      border-bottom:18px solid #f2b489;
+      transform:rotate(-20deg);
+    }
+
+    h1{
+      margin:10px 0 18px;
+      font-size: clamp(22px, 3.2vw, 34px);
+      font-weight:800;
+      letter-spacing:.2px;
+    }
+
+    .hint{
+      margin-top:12px;
+      font-size:13px;
+      opacity:.75;
+    }
+
+    /* Button area */
+    .arena{
+      position:relative;
+      margin:18px auto 0;
+      width:min(520px, 92%);
+      height:120px;
+    }
+
+    .btn{
+      border:none;
+      border-radius:999px;
+      padding:12px 26px;
+      font-weight:700;
+      font-size:16px;
+      cursor:pointer;
+      user-select:none;
+      touch-action:none; /* important for mobile “run away” */
+      box-shadow:0 10px 22px rgba(0,0,0,.10);
+      transition: transform .08s ease;
+    }
+    .btn:active{ transform: scale(.98); }
+
+    .btn-yes{
+      background:var(--yes);
+      color:white;
+      position:absolute;
+      left:30%;
+      top:44px;
+      transform:translate(-50%, -50%);
+    }
+
+    .btn-no{
+      background:var(--no);
+      color:#111;
+      position:absolute;
+      left:70%;
+      top:44px;
+      transform:translate(-50%, -50%);
+      width:96px;
+    }
+
+    /* Success screen */
+    .success{
+      display:none;
+    }
+    .success h2{
+      margin:10px 0 12px;
+      font-size: clamp(26px, 4.2vw, 44px);
+      font-weight:900;
+    }
+    .success .imgwrap{
+      width:min(420px, 92%);
+      margin:10px auto 0;
+      border-radius:14px;
+      overflow:hidden;
+      box-shadow:0 18px 40px rgba(0,0,0,.20);
+      background:#000;
+    }
+    .success img{
+      width:100%;
+      display:block;
+    }
+
+    /* Confetti */
+    .confetti{
+      position:absolute;
+      inset:0;
+      pointer-events:none;
+      overflow:hidden;
+    }
+    .confetti i{
+      position:absolute;
+      top:-20px;
+      width:10px;
+      height:18px;
+      border-radius:2px;
+      opacity:.95;
+      transform: rotate(10deg);
+      animation: fall linear forwards;
+    }
+    @keyframes fall{
+      to{
+        transform: translateY(140vh) rotate(540deg);
+        opacity:1;
+      }
+    }
+
+    /* small footer */
+    .footer{
+      margin-top:16px;
+      font-size:12px;
+      opacity:.55;
+    }
+  </style>
+</head>
+<body>
+  <div class="card" id="card">
+    <div class="confetti" id="confetti"></div>
+
+    <div class="start" id="start">
+      <div class="mascot" aria-hidden="true"></div>
+      <h1><span id="name">nirali</span> will you be my valentine?</h1>
+
+      <div class="arena" id="arena" aria-label="Buttons">
+        <button class="btn btn-yes" id="yesBtn">Yes</button>
+        <button class="btn btn-no" id="noBtn">No</button>
+      </div>
+
+      <div class="hint">“No” seems a bit shy 😈</div>
+      <div class="footer">Tipp: Name kannst du im Code oben ändern.</div>
+    </div>
+
+    <div class="success" id="success">
+      <div class="mascot" aria-hidden="true"></div>
+      <h1><span id="name2">nirali</span> will you be my valentine?</h1>
+      <h2>YAY! 🎉</h2>
+      <div class="imgwrap">
+        <!-- Bild austauschen: src=... -->
+        <img
+          id="yayImg"
+          alt="Yay"
+          src="https://media.giphy.com/media/3oriO0OEd9QIDdllqo/giphy.gif"
+        />
+      </div>
+    </div>
+  </div>
+
+  <script>
+    // ====== SETTINGS ======
+    const personName = "nirali"; // <-- hier ändern
+    // ======================
+
+    const nameEl = document.getElementById("name");
+    const nameEl2 = document.getElementById("name2");
+    nameEl.textContent = personName;
+    nameEl2.textContent = personName;
+
+    const arena = document.getElementById("arena");
+    const noBtn = document.getElementById("noBtn");
+    const yesBtn = document.getElementById("yesBtn");
+    const start = document.getElementById("start");
+    const success = document.getElementById("success");
+    const confetti = document.getElementById("confetti");
+
+    // Keep track of No button position inside arena
+    let pos = { x: 0.70, y: 0.37 }; // relative (0..1)
+    placeNo();
+
+    function placeNo(){
+      const r = arena.getBoundingClientRect();
+      const x = Math.max(0.12, Math.min(0.88, pos.x));
+      const y = Math.max(0.25, Math.min(0.80, pos.y));
+      noBtn.style.left = (x * r.width) + "px";
+      noBtn.style.top  = (y * r.height) + "px";
+    }
+
+    function rand(min, max){ return Math.random() * (max - min) + min; }
+
+    // Move the button away from the pointer/touch
+    function runAway(clientX, clientY){
+      const r = arena.getBoundingClientRect();
+      const bx = noBtn.getBoundingClientRect().left + noBtn.offsetWidth/2;
+      const by = noBtn.getBoundingClientRect().top  + noBtn.offsetHeight/2;
+
+      // direction: from pointer -> button
+      const dx = bx - clientX;
+      const dy = by - clientY;
+
+      // normalize
+      const len = Math.hypot(dx, dy) || 1;
+      const ux = dx / len;
+      const uy = dy / len;
+
+      // step size (bigger on desktop)
+      const step = Math.min(r.width, r.height) * 0.22;
+
+      // new relative pos
+      pos.x = ( (bx - r.left) + ux * step + rand(-20, 20) ) / r.width;
+      pos.y = ( (by - r.top ) + uy * step + rand(-10, 10) ) / r.height;
+
+      // if pointer is already on top, jump randomly
+      if (len < 60){
+        pos.x = rand(0.15, 0.85);
+        pos.y = rand(0.30, 0.80);
+      }
+
+      placeNo();
+    }
+
+    // Desktop: hover / move near it
+    noBtn.addEventListener("mouseenter", (e) => runAway(e.clientX, e.clientY));
+    noBtn.addEventListener("mousemove",  (e) => runAway(e.clientX, e.clientY));
+
+    // Mobile: touchstart near it => jump
+    noBtn.addEventListener("touchstart", (e) => {
+      const t = e.touches[0];
+      runAway(t.clientX, t.clientY);
+      e.preventDefault();
+    }, { passive:false });
+
+    // Also: if finger moves in arena, keep it running
+    arena.addEventListener("touchmove", (e) => {
+      const t = e.touches[0];
+      const b = noBtn.getBoundingClientRect();
+      const near =
+        t.clientX >= b.left - 30 && t.clientX <= b.right + 30 &&
+        t.clientY >= b.top  - 30 && t.clientY <= b.bottom + 30;
+      if (near) runAway(t.clientX, t.clientY);
+    }, { passive:true });
+
+    // YES -> success screen + confetti
+    yesBtn.addEventListener("click", () => {
+      start.style.display = "none";
+      success.style.display = "block";
+      burstConfetti(120);
+    });
+
+    function burstConfetti(n=80){
+      confetti.innerHTML = "";
+      const r = arena.getBoundingClientRect();
+      const colors = ["#ff3b7a","#ffcc00","#7c5cff","#00c2ff","#00d084","#ff6b00"];
+      for(let i=0;i<n;i++){
+        const piece = document.createElement("i");
+        piece.style.left = rand(0, 100) + "%";
+        piece.style.background = colors[Math.floor(rand(0, colors.length))];
+        piece.style.width = rand(6, 12) + "px";
+        piece.style.height = rand(10, 20) + "px";
+        piece.style.animationDuration = rand(1.2, 2.6) + "s";
+        piece.style.animationDelay = rand(0, 0.2) + "s";
+        confetti.appendChild(piece);
+      }
+      // cleanup later
+      setTimeout(() => confetti.innerHTML = "", 3500);
+    }
+
+    // Reposition on resize
+    window.addEventListener("resize", placeNo);
+  </script>
+</body>
+</html>
