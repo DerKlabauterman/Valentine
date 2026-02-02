@@ -47,28 +47,26 @@
       place-items:center;
     }
 
-    .mascot svg{ display:block; }
-
-    /* 💓 Heart pulse */
+    /* 💓 Herz pulsiert */
     .heart{
-      transform-origin: 66px 28px; /* roughly center of heart area */
+      transform-origin: 66px 28px;
       animation: pulse 1.4s ease-in-out infinite;
     }
     @keyframes pulse{
-      0%, 100% { transform: scale(1); }
-      50%      { transform: scale(1.08); }
+      0%,100%{transform:scale(1)}
+      50%{transform:scale(1.08)}
     }
 
-    /* 🐱 Blink animation (we scale eyelids/eyes vertically very fast) */
+    /* 🐱 Blinzeln */
     .eye{
-      transform-origin: center;
-      animation: blink 5.2s infinite;
+      transform-origin:center;
+      animation: blink 5s infinite;
     }
-    .eye.eye2{ animation-delay: 0.18s; } /* slight natural offset */
+    .eye.eye2{ animation-delay:.2s; }
     @keyframes blink{
-      0%, 92%, 100% { transform: scaleY(1); }
-      94%           { transform: scaleY(0.12); }
-      96%           { transform: scaleY(1); }
+      0%,92%,100%{transform:scaleY(1)}
+      94%{transform:scaleY(.12)}
+      96%{transform:scaleY(1)}
     }
 
     h1{
@@ -82,8 +80,7 @@
       margin:18px auto 0;
       width:min(520px, 92%);
       height:120px;
-      /* helps on mobile: */
-      touch-action: none;
+      touch-action: manipulation; /* ✅ FIX */
     }
 
     .btn{
@@ -95,9 +92,7 @@
       cursor:pointer;
       user-select:none;
       box-shadow:0 10px 22px rgba(0,0,0,.12);
-      transition: transform .08s ease;
     }
-    .btn:active{ transform: scale(.98); }
 
     .btn-yes{
       background:var(--yes);
@@ -118,17 +113,8 @@
       width:96px;
     }
 
-    .hint{
-      margin-top:12px;
-      font-size:13px;
-      opacity:.75;
-    }
-
-    .footer{
-      margin-top:16px;
-      font-size:12px;
-      opacity:.55;
-    }
+    .hint{ margin-top:12px; font-size:13px; opacity:.75; }
+    .footer{ margin-top:16px; font-size:12px; opacity:.55; }
 
     .success{ display:none; }
 
@@ -162,7 +148,7 @@
       animation: fall linear forwards;
     }
     @keyframes fall{
-      to{ transform: translateY(140vh) rotate(540deg); }
+      to{ transform:translateY(140vh) rotate(540deg); }
     }
   </style>
 </head>
@@ -174,94 +160,45 @@
   <!-- START -->
   <div id="start">
     <div class="mascot">
-      <!-- Cute Cat SVG (with heart + blinking eyes) -->
-      <svg viewBox="0 0 120 120" width="96" height="96" aria-hidden="true">
-        <!-- Heart -->
+      <svg viewBox="0 0 120 120" width="96" height="96">
         <path class="heart"
           d="M86 20c-4-6-13-6-17 0l-2 3-2-3c-4-6-13-6-17 0-4 6-2 14 4 19l15 13 15-13c6-5 8-13 4-19z"
           fill="#ff3b7a"/>
-
-        <!-- Head -->
         <circle cx="60" cy="68" r="38" fill="#f7c49d"/>
-
-        <!-- Ears -->
         <path d="M30 48 L22 24 L44 36 Z" fill="#f2b489"/>
         <path d="M90 48 L98 24 L76 36 Z" fill="#f2b489"/>
-
-        <!-- Eyes -->
         <g class="eye">
-          <circle cx="46" cy="66" r="6.2" fill="#111"/>
-          <circle cx="44" cy="64" r="2.2" fill="#fff"/>
+          <circle cx="46" cy="66" r="6" fill="#111"/>
+          <circle cx="44" cy="64" r="2" fill="#fff"/>
         </g>
         <g class="eye eye2">
-          <circle cx="74" cy="66" r="6.2" fill="#111"/>
-          <circle cx="72" cy="64" r="2.2" fill="#fff"/>
+          <circle cx="74" cy="66" r="6" fill="#111"/>
+          <circle cx="72" cy="64" r="2" fill="#fff"/>
         </g>
-
-        <!-- Nose -->
         <path d="M60 74 l6 5 a10 10 0 0 1 -12 0z" fill="#ff6b95"/>
-
-        <!-- Mouth -->
         <path d="M60 78 c-6 6-14 7-20 3" stroke="#333" stroke-width="3" fill="none" stroke-linecap="round"/>
         <path d="M60 78 c6 6 14 7 20 3"  stroke="#333" stroke-width="3" fill="none" stroke-linecap="round"/>
-
-        <!-- Cheeks -->
-        <circle cx="38" cy="78" r="6" fill="#ff9db8" opacity="0.55"/>
-        <circle cx="82" cy="78" r="6" fill="#ff9db8" opacity="0.55"/>
-
-        <!-- Whiskers -->
-        <path d="M16 72 H38" stroke="#333" stroke-width="2" stroke-linecap="round" opacity="0.9"/>
-        <path d="M16 80 H38" stroke="#333" stroke-width="2" stroke-linecap="round" opacity="0.9"/>
-        <path d="M82 72 H104" stroke="#333" stroke-width="2" stroke-linecap="round" opacity="0.9"/>
-        <path d="M82 80 H104" stroke="#333" stroke-width="2" stroke-linecap="round" opacity="0.9"/>
       </svg>
     </div>
 
     <h1>Lynn will you be my valentine ❤️?</h1>
 
-    <div class="arena" id="arena" aria-label="Buttons">
+    <div class="arena" id="arena">
       <button class="btn btn-yes" id="yesBtn">Yes</button>
       <button class="btn btn-no" id="noBtn">No</button>
     </div>
 
-    <div class="hint">„No“ lässt dich so unsicher wirken hehe 😈</div>
+    <div class="hint">„No“ ist heute besonders schüchtern 😈</div>
     <div class="footer">Tipp: Widerstand ist zwecklos.</div>
   </div>
 
   <!-- SUCCESS -->
   <div class="success" id="success">
-    <div class="mascot">
-      <!-- same cat again (blink + pulse) -->
-      <svg viewBox="0 0 120 120" width="96" height="96" aria-hidden="true">
-        <path class="heart"
-          d="M86 20c-4-6-13-6-17 0l-2 3-2-3c-4-6-13-6-17 0-4 6-2 14 4 19l15 13 15-13c6-5 8-13 4-19z"
-          fill="#ff3b7a"/>
-        <circle cx="60" cy="68" r="38" fill="#f7c49d"/>
-        <path d="M30 48 L22 24 L44 36 Z" fill="#f2b489"/>
-        <path d="M90 48 L98 24 L76 36 Z" fill="#f2b489"/>
-
-        <g class="eye">
-          <circle cx="46" cy="66" r="6.2" fill="#111"/>
-          <circle cx="44" cy="64" r="2.2" fill="#fff"/>
-        </g>
-        <g class="eye eye2">
-          <circle cx="74" cy="66" r="6.2" fill="#111"/>
-          <circle cx="72" cy="64" r="2.2" fill="#fff"/>
-        </g>
-
-        <path d="M60 74 l6 5 a10 10 0 0 1 -12 0z" fill="#ff6b95"/>
-        <path d="M60 78 c-6 6-14 7-20 3" stroke="#333" stroke-width="3" fill="none" stroke-linecap="round"/>
-        <path d="M60 78 c6 6 14 7 20 3"  stroke="#333" stroke-width="3" fill="none" stroke-linecap="round"/>
-        <circle cx="38" cy="78" r="6" fill="#ff9db8" opacity="0.55"/>
-        <circle cx="82" cy="78" r="6" fill="#ff9db8" opacity="0.55"/>
-      </svg>
-    </div>
-
+    <div class="mascot"></div>
     <h1>Lynn will you be my valentine ❤️?</h1>
     <h2>YAY! 🎉</h2>
-
     <div class="imgwrap">
-      <img src="https://media.giphy.com/media/3oriO0OEd9QIDdllqo/giphy.gif" alt="Yay">
+      <img src="https://media.giphy.com/media/3oriO0OEd9QIDdllqo/giphy.gif">
     </div>
   </div>
 </div>
@@ -274,109 +211,49 @@
   const success = document.getElementById("success");
   const confetti= document.getElementById("confetti");
 
-  // Relative position inside arena (0..1)
-  let pos = { x: 0.70, y: 0.37 };
+  let pos = { x:.7, y:.37 };
   placeNo();
 
-  function clamp(v, min, max){ return Math.max(min, Math.min(max, v)); }
   function rand(min,max){ return Math.random()*(max-min)+min; }
+  function clamp(v,min,max){ return Math.max(min,Math.min(max,v)); }
 
   function placeNo(){
     const r = arena.getBoundingClientRect();
-    pos.x = clamp(pos.x, 0.12, 0.88);
-    pos.y = clamp(pos.y, 0.28, 0.80);
-    noBtn.style.left = (pos.x * r.width) + "px";
-    noBtn.style.top  = (pos.y * r.height) + "px";
+    pos.x = clamp(pos.x,.12,.88);
+    pos.y = clamp(pos.y,.28,.8);
+    noBtn.style.left = pos.x*r.width+"px";
+    noBtn.style.top  = pos.y*r.height+"px";
   }
 
-  // Move away from pointer/finger; stronger on mobile
-  function runAway(clientX, clientY, aggressive=false){
-    const r = arena.getBoundingClientRect();
-    const b = noBtn.getBoundingClientRect();
-
-    const bx = b.left + b.width/2;
-    const by = b.top  + b.height/2;
-
-    const dx = bx - clientX;
-    const dy = by - clientY;
-    const len = Math.hypot(dx, dy) || 1;
-
-    const ux = dx / len;
-    const uy = dy / len;
-
-    // step: bigger => more annoying
-    const base = Math.min(r.width, r.height);
-    const step = aggressive ? base * 0.38 : base * 0.24;
-
-    // convert to arena-relative coords
-    const nx = ((bx - r.left) + ux * step + rand(-18, 18)) / r.width;
-    const ny = ((by - r.top ) + uy * step + rand(-10, 10)) / r.height;
-
-    // if already very close, just teleport
-    if (len < (aggressive ? 90 : 60)) {
-      pos.x = rand(0.15, 0.85);
-      pos.y = rand(0.30, 0.80);
-    } else {
-      pos.x = nx;
-      pos.y = ny;
-    }
-
+  function runAway(x,y){
+    pos.x = rand(.15,.85);
+    pos.y = rand(.3,.8);
     placeNo();
   }
 
-  // Desktop: near/hover => dodge
-  noBtn.addEventListener("mouseenter", (e) => runAway(e.clientX, e.clientY, false));
-  noBtn.addEventListener("mousemove",  (e) => runAway(e.clientX, e.clientY, false));
+  noBtn.addEventListener("mouseenter", e => runAway(e.clientX,e.clientY));
 
-  // Mobile: dodge when finger gets near (even without touching the button)
-  function handleTouch(e){
-    const t = e.touches[0];
-    const b = noBtn.getBoundingClientRect();
+  arena.addEventListener("touchstart", e=>{
+    if(e.target===noBtn){
+      runAway(e.touches[0].clientX,e.touches[0].clientY);
+      e.preventDefault(); // ✅ nur NO blockieren
+    }
+  },{passive:false});
 
-    // "danger zone" around the No button
-    const margin = 70; // make bigger => meaner
-    const near =
-      t.clientX >= (b.left - margin) && t.clientX <= (b.right + margin) &&
-      t.clientY >= (b.top  - margin) && t.clientY <= (b.bottom + margin);
-
-    if (near) runAway(t.clientX, t.clientY, true);
-  }
-
-  arena.addEventListener("touchstart", (e) => {
-    handleTouch(e);
-    // prevent accidental scroll/zoom while playing
-    e.preventDefault();
-  }, { passive:false });
-
-  arena.addEventListener("touchmove", (e) => {
-    handleTouch(e);
-  }, { passive:true });
-
-  // YES => success + confetti
-  yesBtn.addEventListener("click", () => {
+  yesBtn.addEventListener("click", ()=>{
     start.style.display="none";
     success.style.display="block";
-    burstConfetti(140);
-  });
-
-  function burstConfetti(n=100){
-    confetti.innerHTML = "";
-    const colors = ["#ff3b7a","#ffcc00","#7c5cff","#00c2ff","#00d084","#ff6b00"];
-    for(let i=0;i<n;i++){
-      const c = document.createElement("i");
-      c.style.left = rand(0,100) + "%";
-      c.style.background = colors[Math.floor(rand(0, colors.length))];
-      c.style.width = rand(6, 12) + "px";
-      c.style.height = rand(10, 20) + "px";
-      c.style.animationDuration = rand(1.2, 2.8) + "s";
-      c.style.animationDelay = rand(0, 0.25) + "s";
+    for(let i=0;i<120;i++){
+      const c=document.createElement("i");
+      c.style.left=rand(0,100)+"%";
+      c.style.background=["#ff3b7a","#ffcc00","#7c5cff","#00c2ff"][Math.floor(rand(0,4))];
+      c.style.animationDuration=rand(1.2,2.6)+"s";
       confetti.appendChild(c);
     }
-    setTimeout(()=> confetti.innerHTML="", 3800);
-  }
+    setTimeout(()=>confetti.innerHTML="",3500);
+  });
 
   window.addEventListener("resize", placeNo);
 </script>
 </body>
 </html>
-
